@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "*.cjson": "jsonc",
+        "*.wxss": "css",
+        "*.wxs": "javascript",
+        "i2c_driver.h": "c",
+        "stm8s.h": "c",
+        "stm8s_i2c.h": "c",
+        "bq28z610.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "ranges": "c",
+        "key.h": "c",
+        "stm8s_gpio.h": "c",
+        "comm.h": "c",
+        "main.h": "c"
+    }
+}
