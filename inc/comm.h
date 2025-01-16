@@ -22,4 +22,6 @@ void Reset_Inactivity_Timer(void);
 
 void Enter_LowPower_Mode(void);
 
+void send_i2c_error(void);
+
 #endif

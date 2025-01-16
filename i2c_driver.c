@@ -4,6 +4,7 @@ __IO uint16_t slaveAddress = 0;
 __IO uint32_t sEETimeout = sEE_LONG_TIMEOUT;
 __IO uint8_t *sEEDataWritePointer;
 __IO uint8_t sEEDataNum;
+extern uint32_t systime_100ms;
 
 /**
  * @brief  DeInitializes peripherals used by the I2C EEPROM driver.
@@ -185,18 +186,17 @@ uint32_t requestBytes(uint8_t *pBuffer, uint16_t *NumByteToRead)
         pBuffer[i] = I2C_ReceiveData(); /* 读取 1 个字节 */
     }
 
-
     /*-----------------------------------------------------------------------------
      * 4. 最后一个字节，需要发送 NACK
      *    先关闭 ACK: I2C_AcknowledgeConfig(I2C_ACK_NONE)
      *    等待事件 EV7，再读取最后一字节
      *----------------------------------------------------------------------------*/
     I2C_AcknowledgeConfig(I2C_ACK_NONE);
-   /*-----------------------------------------------------------------------------
+    /*-----------------------------------------------------------------------------
      * 5. 读取完毕后发送 STOP，并恢复 ACK 使能（为后续其他通信做准备）
      *----------------------------------------------------------------------------*/
     I2C_GenerateSTOP(ENABLE);
-    
+
     while (I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_RECEIVED) == ERROR)
     {
         /* 等待最后一个字节到达 */
@@ -205,7 +205,7 @@ uint32_t requestBytes(uint8_t *pBuffer, uint16_t *NumByteToRead)
 
     /* 如果后续还有其他通信需要再次 ACK，可以在此恢复 */
     I2C_AcknowledgeConfig(I2C_ACK_CURR);
-    
+
     return sEE_OK;
 }
 
@@ -650,8 +650,18 @@ void sEE_ExitCriticalSection_UserCallback(void)
 
 uint32_t sEE_TIMEOUT_UserCallback(void)
 {
+    static uint32_t systime_rec = 0;
+    systime_rec = systime_100ms;
     /* Block communication and all processes */
     while (1)
     {
+        // 停留超过1s
+        if (systime_100ms > systime_rec + 10)
+        {
+            // 发送错误信息
+            send_i2c_error();
+            return 1;
+        }
+        // systime_rec = systime_s;
     }
 }

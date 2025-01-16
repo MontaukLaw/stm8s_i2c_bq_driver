@@ -39,7 +39,7 @@
 
 extern uint8_t data;
 extern uint8_t get_data;
-
+extern uint32_t systime_100ms;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -115,7 +115,6 @@ INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-
 }
 
 /**
@@ -276,7 +275,14 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-   
+    if (TIM2_GetITStatus(TIM2_IT_UPDATE))
+    {
+        // 发送1个字节
+        // UART1_SendData8(0x55);
+        // 清除中断标志
+        systime_100ms++;
+        TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
+    }
 #if 0
     if (TIM2_GetITStatus(TIM2_IT_UPDATE))
     {
@@ -294,7 +300,6 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13)
         TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
     }
 #endif
-
 }
 
 /**
@@ -374,10 +379,11 @@ INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
         else
         {
             // 如果接收溢出，视需求要么覆盖、要么丢弃、要么标记错误
+            g_RxCount = 0;
         }
 
         // 重置计时器
-        Reset_Inactivity_Timer();
+        // Reset_Inactivity_Timer();
 
         // 清除接收中断标志
         UART1_ClearITPendingBit(UART1_IT_RXNE);

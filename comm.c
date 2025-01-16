@@ -43,6 +43,17 @@ void send_uart_dword(uint32_t data)
         ;
 }
 
+void send_i2c_error(void)
+{
+    uint8_t i = 0;
+    for (i = 0; i < 4; i++)
+    {
+        UART1_SendData8(0xFF);
+        while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET)
+            ;
+    }
+}
+
 void handle_comm_multi_bytes(void)
 {
     uint16_t word_result = 0;
@@ -136,7 +147,6 @@ void handle_comm_multi_bytes(void)
             // 返回AFE状态
             byte_result = get_afe_status();
             send_uart_byte(byte_result);
-
         }
         else if (data == 'S' && data2 == 'D' && data3 == 'S' && data4 == 'G')
         {
@@ -152,7 +162,7 @@ void handle_comm_multi_bytes(void)
             // 切换充电MOS开关
             DischargeFET();
             Delay(10000);
-            
+
             byte_result = get_chg();
             send_uart_byte(byte_result);
         }

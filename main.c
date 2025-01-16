@@ -4,6 +4,40 @@ volatile uint8_t inactivity_seconds = 0;
 
 uint8_t data = 0;
 uint8_t get_data = 0;
+__IO uint32_t LsiFreq = 0;
+uint32_t systime_100ms = 0;
+/**
+ * @brief  Configures the IWDG to generate a Reset if it is not refreshed at the
+ *         correct time.
+ * @param  None
+ * @retval None
+ */
+static void IWDG_Config(void)
+{
+    /* Enable IWDG (the LSI oscillator will be enabled by hardware) */
+    IWDG_Enable();
+
+    /* IWDG timeout equal to 250 ms (the timeout may varies due to LSI frequency
+       dispersion) */
+    /* Enable write access to IWDG_PR and IWDG_RLR registers */
+    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+
+    /* IWDG counter clock: LSI/128 */
+    IWDG_SetPrescaler(IWDG_Prescaler_128);
+
+    /* Set counter reload value to obtain 250ms IWDG Timeout.
+      Counter Reload Value = 250ms/IWDG counter clock period
+                           = 250ms / (LSI/128)
+                           = 0.25s / (LsiFreq/128)
+                           = LsiFreq/(128 * 4)
+                           = LsiFreq/512
+     */
+    IWDG_SetReload((uint8_t)(LsiFreq / 512));
+
+    /* Reload IWDG counter */
+    IWDG_ReloadCounter();
+
+}
 
 #if 0
 void Enter_LowPower_Mode(void)
@@ -47,7 +81,9 @@ static void UART1_Config(void)
 // 如果为1则进行AFE开关切换为0（失能），即为保证MCU开机时电池板子的AFE为失能状态
 void disabel_afe(void)
 {
+    Delay(10000);
     uint8_t afeStatus = get_afe_status();
+
     Delay(10000);
     if (afeStatus == 0x01)
     {
@@ -64,7 +100,7 @@ void TIM2_Init_Config(void)
     TIM2_DeInit();
 
     // 配置 TIM2 以1秒为周期
-    TIM2_TimeBaseInit(TIM2_PRESCALER_16384, 1000); // 1秒中断一次
+    TIM2_TimeBaseInit(TIM2_PRESCALER_16384, 100); // 100ms中断一次
 
     // 使能更新中断
     TIM2_ITConfig(TIM2_IT_UPDATE, ENABLE);
@@ -74,17 +110,17 @@ void TIM2_Init_Config(void)
 }
 
 /* 函数定义 */
-void Reset_Inactivity_Timer(void)
-{
-    /* 重置计时器计数 */
-    inactivity_seconds = 0;
+// void Reset_Inactivity_Timer(void)
+// {
+//     /* 重置计时器计数 */
+//     inactivity_seconds = 0;
 
-    /* 重新启动 TIM2，如果它已被禁用 */
-    if (!TIM2_GetFlagStatus(TIM2_FLAG_UPDATE))
-    {
-        TIM2_Cmd(ENABLE);
-    }
-}
+//     /* 重新启动 TIM2，如果它已被禁用 */
+//     if (!TIM2_GetFlagStatus(TIM2_FLAG_UPDATE))
+//     {
+//         TIM2_Cmd(ENABLE);
+//     }
+// }
 
 void main(void)
 {
@@ -100,23 +136,24 @@ void main(void)
     // 配置 UART1
     UART1_Config();
 
-    disabel_afe();
-
     key_init();
 
     // 初始化 TIM2 作为软件计时器
-    // TIM2_Init_Config();
+    TIM2_Init_Config();
 
     // 全局使能中断
     enableInterrupts();
 
+    disabel_afe();
+
+    /* Get measured LSI frequency */
+    // LsiFreq = LSIMeasurment();
+
+    /* IWDG Configuration */
+    // IWDG_Config();
+
     while (1)
     {
-        // if (get_data)
-        // {
-        //     handle_comm(data);
-        //     get_data = 0;
-        // }
 
         if (timeToParseData)
         {
@@ -133,8 +170,10 @@ void main(void)
         // get_voltage();
         // get_current();
         /* Insert delay */
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < 100; i++)
             ;
+
+        // IWDG_ReloadCounter();
     }
 }
 

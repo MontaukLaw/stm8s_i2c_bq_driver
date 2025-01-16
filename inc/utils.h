@@ -14,4 +14,6 @@ void Delay(__IO uint32_t nCount);
 
 uint16_t composeWord(uint8_t *buf, uint32_t lsbIndex, uint8_t littleEndian);
 
+uint32_t LSIMeasurment(void);
+
 #endif
