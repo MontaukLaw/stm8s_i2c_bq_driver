@@ -376,7 +376,7 @@ INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
 
             g_RxCount++;
         }
-        else
+        else if (g_RxCount >= 5)
         {
             // 如果接收溢出，视需求要么覆盖、要么丢弃、要么标记错误
             g_RxCount = 0;
