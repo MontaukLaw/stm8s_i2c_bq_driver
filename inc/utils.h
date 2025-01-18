@@ -16,4 +16,6 @@ uint16_t composeWord(uint8_t *buf, uint32_t lsbIndex, uint8_t littleEndian);
 
 uint32_t LSIMeasurment(void);
 
+void Soft_Reset(void);
+
 #endif

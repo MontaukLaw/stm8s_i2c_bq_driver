@@ -6,6 +6,9 @@ uint8_t data = 0;
 uint8_t get_data = 0;
 __IO uint32_t LsiFreq = 0;
 uint32_t systime_100ms = 0;
+
+#if 0
+
 /**
  * @brief  Configures the IWDG to generate a Reset if it is not refreshed at the
  *         correct time.
@@ -39,7 +42,7 @@ static void IWDG_Config(void)
 
 }
 
-#if 0
+
 void Enter_LowPower_Mode(void)
 {
     /* 关闭不必要的外设以降低功耗 */
@@ -121,6 +124,7 @@ void TIM2_Init_Config(void)
 //         TIM2_Cmd(ENABLE);
 //     }
 // }
+
 
 void main(void)
 {

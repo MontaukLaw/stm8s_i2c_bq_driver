@@ -39,6 +39,21 @@ uint16_t composeWord(uint8_t *buf, uint32_t lsbIndex, uint8_t littleEndian)
     return (buf[msbIndex] << 8) | buf[lsbIndex];
 }
 
+void Soft_Reset(void)
+{
+    // 启动独立看门狗
+    IWDG_Enable();
+    // 设置看门狗计数器超时时间
+    IWDG_SetPrescaler(IWDG_Prescaler_64); // 可选的分频器
+    IWDG_SetReload(0xFF);                 // 设置计数器重载值
+    // 强制重装看门狗计数器
+    IWDG_ReloadCounter();
+
+    // 等待看门狗超时
+    while (1)
+        ;
+}
+
 /**
  * @brief  Measure the LSI frequency using timer IC1 and update the calibration registers.
  * @note   It is recommended to use a timer clock frequency of at least 10MHz in order

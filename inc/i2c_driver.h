@@ -4,6 +4,7 @@
 #include "stm8s.h"
 #include "stm8s_i2c.h"
 #include "utils.h"
+#include "comm.h"
 
 #define sEE_I2C                          I2C  
 #define sEE_I2C_CLK                      CLK_PERIPHERAL_I2C

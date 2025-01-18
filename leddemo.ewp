@@ -257,7 +257,7 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>C:\work\shitty_work\stm8s_i2c\inc</state>
+                    <state>$PROJ_DIR$\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

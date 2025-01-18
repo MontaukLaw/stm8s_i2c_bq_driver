@@ -281,6 +281,11 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13)
         // UART1_SendData8(0x55);
         // 清除中断标志
         systime_100ms++;
+
+        if (systime_100ms % 10 == 0)
+        {
+            send_uart_byte(0x55);
+        }
         TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
     }
 #if 0
@@ -379,6 +384,8 @@ INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
         else if (g_RxCount >= 5)
         {
             // 如果接收溢出，视需求要么覆盖、要么丢弃、要么标记错误
+            // 发送错误标志0x56
+            // send_uart_byte(0x56);
             g_RxCount = 0;
         }
 
@@ -391,7 +398,7 @@ INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
 
     if (UART1_GetITStatus(UART1_IT_IDLE) != RESET)
     {
-
+        // send_uart_byte(g_RxCount);
         timeToParseData = 1;
         // 读取 DR 以清除 IDLE 标志
         (void)UART1_ReceiveData8();

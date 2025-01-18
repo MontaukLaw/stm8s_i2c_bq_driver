@@ -24,4 +24,6 @@ void Enter_LowPower_Mode(void);
 
 void send_i2c_error(void);
 
+void send_uart_byte(uint8_t data);
+
 #endif

@@ -15,4 +15,6 @@
 
 void key_process(void);
 
+void key_init(void);
+
 #endif

@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\work\shitty_work\stm8s_i2c\settings\leddemo.Debug.general.xcl" --backend -f "C:\work\shitty_work\stm8s_i2c\settings\leddemo.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\work\stm8s_i2c_bq_driver\settings\leddemo.Debug.general.xcl" --backend -f "C:\work\stm8s_i2c_bq_driver\settings\leddemo.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\work\shitty_work\stm8s_i2c\settings\leddemo.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\work\shitty_work\stm8s_i2c\settings\leddemo.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\work\stm8s_i2c_bq_driver\settings\leddemo.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\work\stm8s_i2c_bq_driver\settings\leddemo.Debug.driver.xcl" 
 
 @echo off 
 :end

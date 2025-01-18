@@ -652,6 +652,9 @@ uint32_t sEE_TIMEOUT_UserCallback(void)
 {
     static uint32_t systime_rec = 0;
     systime_rec = systime_100ms;
+
+    // send_i2c_error();
+    // Soft_Reset();
     /* Block communication and all processes */
     while (1)
     {
@@ -660,6 +663,8 @@ uint32_t sEE_TIMEOUT_UserCallback(void)
         {
             // 发送错误信息
             send_i2c_error();
+            Soft_Reset();
+            // BQ_I2C_Init();    
             return 1;
         }
         // systime_rec = systime_s;
