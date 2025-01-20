@@ -140,6 +140,7 @@ void handle_comm_multi_bytes(void)
         data = g_RxBuffer[0];
         data2 = g_RxBuffer[1];
         data3 = g_RxBuffer[2];
+        data4 = g_RxBuffer[3];
 
         if (data == 'S' && data2 == 'A' && data3 == 'F' && data4 == 'E')
         {
